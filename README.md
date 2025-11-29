@@ -23,3 +23,23 @@ A Django-based laminate flooring calculator with interactive layout visualizatio
 
 git clone https://github.com/yourusername/el-calculato-laminato.git
 cd el-calculato-laminato
+
+2. Create a virtual environment: 
+
+python -m venv venv
+
+3. Activate venv: 
+
+source venv/bin/activate (Mac/Linux) or venv\Scripts\activate (Windows)
+
+4. Install dependencies:
+
+pip install django
+
+5. Perform migrations: 
+
+python manage.py migrate
+
+6. Start the server: 
+
+python manage.py runserver
