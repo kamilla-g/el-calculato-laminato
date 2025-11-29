@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>El Calculato Laminato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Все стили остаются без изменений, кроме добавленных ниже */
+    
+    /* УВЕЛИЧИВАЕМ КОНТЕЙНЕР СХЕМЫ И УБИРАЕМ ПРОКРУТКУ В РЕЗУЛЬТАТАХ */
+    .layout-container {
+      background: rgba(255,255,255,0.8);
+      padding: 20px;
+      border-radius: 15px;
+      overflow: auto;
+      max-width: 100%;
+      min-height: 550px; /* УВЕЛИЧИЛИ С 500 ДО 550 */
+      max-height: 650px; /* УВЕЛИЧИЛИ С 600 ДО 650 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(213,210,255,0.5);
+      box-shadow: 0 4px 15px rgba(213,210,255,0.2);
+    }
+    
+    .layout-scheme {
+      background: white;
+      border: 2px solid #d5d2ff;
+      position: relative;
+      margin: 0 auto;
+      box-shadow: 0 2px 10px rgba(213,210,255,0.3);
+      /* УБИРАЕМ АБСОЛЮТНЫЕ РАЗМЕРЫ ИЗ СТИЛЕЙ */
+    }
+    
+    /* УБИРАЕМ ПРОКРУТКУ В РЕЗУЛЬТАТАХ */
+    .result-section {
+      background: rgba(255,255,255,0.8);
+      border-radius: 15px;
+      padding: 20px;
+      border: 1px solid rgba(213,210,255,0.5);
+      box-shadow: 0 4px 15px rgba(213,210,255,0.2);
+      min-height: auto;
+      /* УБИРАЕМ max-height И overflow-y */
+    }
+
+    /* ДОБАВЛЯЕМ СТИЛИ ДЛЯ ПРЕДУПРЕЖДЕНИЯ */
+    .scheme-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #666;
+      font-size: 16px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    /* ОСТАЛЬНЫЕ СТИЛИ БЕЗ ИЗМЕНЕНИЙ */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #f8f7ff, #f0eeff);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    
+    .calculator-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .calculator-header h1 {
+      font-size: 48px;
+      font-weight: 700;
+      color: rgba(0,0,0,1);
+    }
+    
+    .calculator-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      max-width: 1800px;
+      margin: 0 auto;
+      align-items: start;
+    }
+    
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+    
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+    
+    .section {
+      margin-bottom: 0;
+    }
+    
+    .section-title {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: rgba(0,0,0,1);
+    }
+    
+    .input-row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .input-group {
+      flex: 1;
+      min-width: 220px;
+      height: 130px;
+      background: rgba(255,255,255,0.8);
+      border-radius: 15px;
+      padding: 15px;
+      border: 1px solid rgba(213,210,255,0.5);
+      box-shadow: 0 4px 15px rgba(213,210,255,0.2);
+    }
+    
+    .input-label {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: rgba(0,0,0,1);
+    }
+    
+    .input-field {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #d5d2ff;
+      border-radius: 5px;
+      font-size: 16px;
+      margin-top: 5px;
+      background: rgba(255,255,255,0.9);
+      font-family: 'Roboto', sans-serif;
+    }
+    
+    .input-hint {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+      font-weight: 400;
+    }
+    
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, #d5d2ff, transparent);
+      margin: 15px 0;
+    }
+    
+    .radio-group {
+      margin: 12px 0;
+    }
+    
+    .radio-label {
+      font-size: 18px;
+      margin-left: 8px;
+      font-weight: 400;
+    }
+    
+    .rules-section {
+      background: rgba(255,255,255,0.8);
+      border-radius: 15px;
+      padding: 20px;
+      border: 1px solid rgba(213,210,255,0.5);
+      box-shadow: 0 4px 15px rgba(213,210,255,0.2);
+    }
+    
+    .rule-input {
+      margin: 12px 0;
+    }
+    
+    .rule-input .input-label {
+      font-size: 18px;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    
+    .layout-row {
+      display: flex;
+    }
+    
+    .panel {
+      border: 1px solid #b8b5e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      min-width: 15px;
+      flex-shrink: 0;
+    }
+    
+    .panel:hover {
+      transform: scale(1.05);
+      z-index: 10;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    
+    .panel:hover::after {
+      content: attr(data-size);
+      position: absolute;
+      left: 50%;
+      top: -40px;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.9);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      white-space: nowrap;
+      z-index: 20;
+      font-weight: 500;
+      font-family: 'Roboto', sans-serif;
+    }
+    
+    .full-panel {
+      background: linear-gradient(135deg, #e8f4fd, #d4e8ff);
+      border-color: #4a90e2;
+    }
+    
+    .cut-length-panel {
+      background: linear-gradient(135deg, #fbe9e7, #ffccbc);
+      border-color: #ff5722;
+    }
+    
+    .cut-width-panel {
+      background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+      border-color: #ff9800;
+    }
+    
+    .panel-number {
+      font-weight: 500;
+      color: #333;
+      font-size: 12px; /* НЕМНОГО УВЕЛИЧИЛИ ШРИФТ */
+      z-index: 2;
+      text-shadow: 1px 1px 2px white;
+      font-family: 'Roboto', sans-serif;
+    }
+    
+    .scheme-legend {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      background: rgba(255,255,255,0.7);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(213,210,255,0.5);
+      font-weight: 400;
+    }
+    
+    .legend-color {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .result-group {
+      background: rgba(255,255,255,0.9);
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 90px;
+      border: 1px solid rgba(213,210,255,0.5);
+      box-shadow: 0 2px 8px rgba(213,210,255,0.1);
+    }
+
+    .result-label {
+      font-size: 18px;
+      font-weight: 500;
+      color: rgba(0,0,0,1);
+      margin-bottom: 8px;
+    }
+
+    .result-number {
+      font-size: 22px;
+      font-weight: 400;
+      color: rgba(0,0,0,1);
+      margin: 5px 0;
+    }
+
+    .result-hint {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+      font-weight: 400;
+    }
+
+    .left-column, .right-column {
+      height: fit-content;
+    }
+
+    .right-column .section:first-child {
+      flex: 1;
+    }
+
+    input[type="radio"] {
+      accent-color: #8a84ff;
+    }
+
+    input[type="number"]:focus {
+      border-color: #8a84ff;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(138, 132, 255, 0.2);
+    }
+
+    .error-message {
+      background: #ffebee;
+      color: #c62828;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+      border: 1px solid #ffcdd2;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator-header">
+    <h1>El Calculato Laminato</h1>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    
+    {% if error %}
+    <div class="error-message">
+      {{ error }}
+    </div>
+    {% endif %}
+
+    <div class="calculator-body">
+      <!-- ЛЕВАЯ КОЛОНКА -->
+      <div class="left-column">
+        <!-- Room Parameters Section -->
+        <div class="section">
+          <h2 class="section-title">Room parameters</h2>
+          <div class="input-row">
+            <div class="input-group">
+              <div class="input-label">Length</div>
+              <input type="number" name="room_length" class="input-field" placeholder="5.4" value="{{ room_length }}" step="0.1">
+              <div class="input-hint">Enter value in meters</div>
+            </div>
+            
+            <div class="input-group">
+              <div class="input-label">Width</div>
+              <input type="number" name="room_width" class="input-field" placeholder="4.0" value="{{ room_width }}" step="0.1">
+              <div class="input-hint">Enter value in meters</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Laminate Flooring Section -->
+        <div class="section">
+          <h2 class="section-title">Laminate flooring</h2>
+          
+          <div class="input-row">
+            <div class="input-group">
+              <div class="input-label">Length</div>
+              <input type="number" name="laminate_length" class="input-field" placeholder="1285" value="{{ laminate_length }}">
+              <div class="input-hint">Enter value in millimeters</div>
+            </div>
+            
+            <div class="input-group">
+              <div class="input-label">Width</div>
+              <input type="number" name="laminate_width" class="input-field" placeholder="192" value="{{ laminate_width }}">
+              <div class="input-hint">Enter value in millimeters</div>
+            </div>
+          </div>
+          
+          <div class="input-row">
+            <div class="input-group">
+              <div class="input-label">Price</div>
+              <input type="number" name="laminate_price" class="input-field" placeholder="400" value="{{ laminate_price }}">
+              <div class="input-hint">Enter value in USD/m²</div>
+            </div>
+            
+            <div class="input-group">
+              <div class="input-label">Panels per pack</div>
+              <input type="number" name="panels_per_pack" class="input-field" placeholder="8" value="{{ panels_per_pack }}">
+              <div class="input-hint">Enter value in pieces</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Rules for Laying Section -->
+        <div class="section">
+          <h2 class="section-title">Rules for laying laminate flooring</h2>
+          
+          <div class="rules-section">
+            <h3 class="input-label">Direction of laminate laying</h3>
+            <div class="radio-group">
+              <input type="radio" id="direction-length" name="direction" value="length" {% if direction == 'length' %}checked{% endif %}>
+              <label for="direction-length" class="radio-label">Along the length</label>
+            </div>
+            <div class="radio-group">
+              <input type="radio" id="direction-width" name="direction" value="width" {% if direction == 'width' %}checked{% endif %}>
+              <label for="direction-width" class="radio-label">Along the width</label>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="rule-input">
+              <div class="input-label">Rows shifting</div>
+              <input type="number" name="row_shift" class="input-field" placeholder="Enter value in millimeters" value="{{ row_shift }}">
+            </div>
+            
+            <div class="rule-input">
+              <div class="input-label">Minimum allowable length of the panel segment</div>
+              <input type="number" name="min_panel_length" class="input-field" placeholder="Enter value in millimeters" value="{{ min_panel_length }}">
+            </div>
+            
+            <div class="rule-input">
+              <div class="input-label">Walls indentation</div>
+              <input type="number" name="wall_indent" class="input-field" placeholder="Enter value in millimeters" value="{{ wall_indent }}">
+            </div>
+            
+            <div class="rule-input">
+              <div class="input-label">Minimum allowable row width</div>
+              <input type="number" name="min_row_width" class="input-field" placeholder="Enter value in millimeters" value="{{ min_row_width }}">
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Кнопка расчета -->
+        <div class="section">
+          <button type="submit" style="
+            background: linear-gradient(135deg, #8a84ff, #6a64ff);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+            width: 100%;
+            transition: all 0.3s ease;
+          ">Calculate Laminate</button>
+        </div>
+      </div>
+
+      <!-- ПРАВАЯ КОЛОНКА -->
+      <div class="right-column">
+        <!-- Layout Scheme Section -->
+        <div class="section">
+          <h2 class="section-title">Laminate laying scheme</h2>
+          
+          <div class="layout-container">
+            <div class="layout-scheme" id="layout-scheme">
+              {% if not calculation_done %}
+                <div class="scheme-placeholder">
+                  Enter parameters and click "Calculate" to see the layout scheme
+                </div>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="scheme-legend">
+            <div class="legend-item">
+              <div class="legend-color" style="background: linear-gradient(135deg, #e8f4fd, #d4e8ff);"></div>
+              <span>Full panels</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: linear-gradient(135deg, #fbe9e7, #ffccbc);"></div>
+              <span>Cut panels (length)</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: linear-gradient(135deg, #fff3e0, #ffe0b2);"></div>
+              <span>Cut panels (width)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results Section -->
+        {% if calculation_done %}
+        <div class="section">
+          <h2 class="section-title">Results</h2>
+          
+          <div class="result-section">
+            <div class="results-grid">
+              <div class="result-group">
+                <div class="result-label">Total area required</div>
+                <div class="result-number" id="total-area">{{ total_area }}</div>
+                <div class="result-hint">square meters</div>
+              </div>
+              
+              <div class="result-group">
+                <div class="result-label">Total packs needed</div>
+                <div class="result-number" id="total-packs">{{ total_packs }}</div>
+                <div class="result-hint">packs</div>
+              </div>
+              
+              <div class="result-group">
+                <div class="result-label">Total cost</div>
+                <div class="result-number" id="total-cost">{{ total_cost }}</div>
+                <div class="result-hint">USD</div>
+              </div>
+              
+              <div class="result-group">
+                <div class="result-label">Waste percentage</div>
+                <div class="result-number" id="waste-percentage">{{ waste_percentage }}%</div>
+                <div class="result-hint">material waste</div>
+              </div>
+              
+              <div class="result-group">
+                <div class="result-label">Total panels</div>
+                <div class="result-number" id="total-panels">{{ total_panels }}</div>
+                <div class="result-hint">pieces</div>
+              </div>
+              
+              <div class="result-group">
+                <div class="result-label">Total segments</div>
+                <div class="result-number" id="total-segments">{{ total_segments }}</div>
+                <div class="result-hint">cut pieces</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </form>
+
+  <script>
+    // Функция для отрисовки схемы из данных Python
+    function renderLayoutScheme() {
+      const scheme = document.getElementById('layout-scheme');
+      {% if calculation_done %}
+        const layoutData = {{ layout_data_json|safe }};
+        const scale = {{ scale }};
+        
+        if (!layoutData || layoutData.length === 0) {
+          scheme.innerHTML = '<div class="scheme-placeholder">No layout data available</div>';
+          return;
+        }
+        
+        scheme.innerHTML = '';
+        
+        // Рассчитываем общие размеры схемы
+        let totalWidth = 0;
+        let totalHeight = 0;
+        
+        // Находим максимальную длину ряда
+        layoutData.forEach(row => {
+          let rowLength = 0;
+          row.forEach(panel => {
+            rowLength += panel.length;
+          });
+          totalWidth = Math.max(totalWidth, rowLength);
+        });
+        
+        // Высота - сумма высот всех рядов
+        layoutData.forEach(row => {
+          if (row.length > 0) {
+            totalHeight += row[0].width;
+          }
+        });
+        
+        // Устанавливаем размеры схемы с учетом масштаба
+        scheme.style.width = (totalWidth * scale) + 'px';
+        scheme.style.height = (totalHeight * scale) + 'px';
+        
+        // Отрисовываем ряды и панели
+        layoutData.forEach((row, rowIndex) => {
+          const rowDiv = document.createElement('div');
+          rowDiv.className = 'layout-row';
+          rowDiv.style.height = (row[0].width * scale) + 'px';
+          
+          row.forEach(panel => {
+            const panelDiv = document.createElement('div');
+            panelDiv.className = `panel ${panel.type}`;
+            panelDiv.style.width = (panel.length * scale) + 'px';
+            panelDiv.style.height = (panel.width * scale) + 'px';
+            
+            const numberSpan = document.createElement('span');
+            numberSpan.className = 'panel-number';
+            numberSpan.textContent = panel.number;
+            panelDiv.appendChild(numberSpan);
+            
+            panelDiv.setAttribute('data-size', `${Math.round(panel.length)}×${Math.round(panel.width)}mm`);
+            
+            rowDiv.appendChild(panelDiv);
+          });
+          
+          scheme.appendChild(rowDiv);
+        });
+      {% endif %}
+    }
+
+    // Запускаем отрисовку при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+      renderLayoutScheme();
+    });
+  </script>
+</body>
+</html>
